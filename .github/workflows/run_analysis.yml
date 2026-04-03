@@ -23,7 +23,7 @@ jobs:
       - name: 安装必要依赖
         run: |
           pip install -r requirements.txt
-          pip install akshare yfinance pushplus
+          pip install akshare yfinance requests
 
       - name: 启动 AI 分析机器人
         env:

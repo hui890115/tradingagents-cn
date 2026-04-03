@@ -23,16 +23,19 @@ jobs:
       - name: 安装必要依赖
         run: |
           python -m pip install --upgrade pip
-          # 核心修复：安装 requests 替代报错的 pushplus
           pip install akshare yfinance requests pandas lxml
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: 启动 AI 分析机器人
         env:
-          # 核心修复：将 DeepSeek 映射给程序找的变量名
+          # 1. 既然程序报错说缺这个，我们就把 DeepSeek 的 Key 给它
           GOOGLE_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          # 2. 告诉程序：虽然你想要 Google，但请去 DeepSeek 的地址
           OPENAI_API_BASE: https://api.deepseek.com/v1
+          # 3. 核心修复：强制程序切换模型供应商为 openai (DeepSeek 通用协议)
+          MODEL_PROVIDER: openai
           MODEL_NAME: deepseek-chat
           PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
         run: |
+          # 运行主程序
           python main.py --ticker ${{ github.event.inputs.stock_code }}
